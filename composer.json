@@ -1,0 +1,11 @@
+{
+    "name": "pavleocom/pixelart",
+    "description": "Photo mosaic builder.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PixelArt\\": "src/"
+        }
+    }
+}
