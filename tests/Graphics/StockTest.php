@@ -21,11 +21,6 @@ class StockTest extends TestCase
        $this->outputDir = dirname(__FILE__) . '/../images/output';
     }
 
-    protected function tearDown(): void
-    {
-        // $this->cleanUp( $this->outputDir );
-    }
-
     public function testGetBestMatchFindCorrectMatchFromLoadedStock()
     {
         $imageFactory = new ImageFactory();
@@ -51,28 +46,5 @@ class StockTest extends TestCase
         $this->assertEquals(158, $rgb[2]);
 
     }
-
-    /**
-     * Deletes all files and directories inside the dir.
-     */
-    private function cleanUp($dir)
-    {
-        foreach (new DirectoryIterator($dir) as $file) {
-
-            if ( $file->isDir() && $file->isReadable() ) {
-
-                $this->cleanUp( $file->getPathname() );
-
-            } else if ( $file->isFile() && $file->isWritable() ) {
-
-                unlink( $file->getPathname() );
-
-            }
-
-        }
-    }
-    
-
-
 
 }
