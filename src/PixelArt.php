@@ -51,6 +51,6 @@ class PixelArt
      */
     public function buildPhotoMosaic(array $schema, string $outputDir)
     {
-        return $this->image->createFromSchema($schema, $outputDir);
+        return Image::createFromSchema($schema, $outputDir);
     }
 }

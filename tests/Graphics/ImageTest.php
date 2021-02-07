@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace PixelArt\Tests;
 
+use Exception;
+use \PixelArt\Graphics\Image;
 use PHPUnit\Framework\TestCase;
 use PixelArt\Factory\ImageFactory;
 
@@ -76,9 +78,55 @@ class ImageTest extends TestCase
 
         }
 
-        $mosaicPath = $this->image->createFromSchema($schema, dirname(__FILE__) . '/../images/output');
+        $mosaicPath = Image::createFromSchema($schema, dirname(__FILE__) . '/../images/output');
 
         $this->assertFileExists($mosaicPath);
+
+        $mosaicImage = $this->imageFactory->create($mosaicPath);
+
+        $meanRGB = $mosaicImage->getMeanRGB();
+        $this->assertEquals(158, $meanRGB[0]);
+        $this->assertEquals(151, $meanRGB[1]);
+        $this->assertEquals(159, $meanRGB[2]);
+
+        $mosaicPixels = $mosaicImage->getRGBs();
+
+        $pixel_0_0 = $mosaicPixels['0,0'];
+        $this->assertEquals(154, $pixel_0_0[0]);
+        $this->assertEquals(180, $pixel_0_0[1]);
+        $this->assertEquals(207, $pixel_0_0[2]);
+
+        $pixel_75_75 = $mosaicPixels['75,75'];
+        $this->assertEquals(187, $pixel_75_75[0]);
+        $this->assertEquals(187, $pixel_75_75[1]);
+        $this->assertEquals(187, $pixel_75_75[2]);
+
+        $pixel_125_125 = $mosaicPixels['125,125'];
+        $this->assertEquals(183, $pixel_125_125[0]);
+        $this->assertEquals(188, $pixel_125_125[1]);
+        $this->assertEquals(210, $pixel_125_125[2]);
+
+        $pixel_175_175 = $mosaicPixels['175,175'];
+        $this->assertEquals(186, $pixel_175_175[0]);
+        $this->assertEquals(162, $pixel_175_175[1]);
+        $this->assertEquals(158, $pixel_175_175[2]);
+
+        $pixel_225_225 = $mosaicPixels['225,225'];
+        $this->assertEquals(157, $pixel_225_225[0]);
+        $this->assertEquals(148, $pixel_225_225[1]);
+        $this->assertEquals(139, $pixel_225_225[2]);
+
+        $pixel_275_275 = $mosaicPixels['275,275'];
+        $this->assertEquals(83, $pixel_275_275[0]);
+        $this->assertEquals(46, $pixel_275_275[1]);
+        $this->assertEquals(53, $pixel_275_275[2]);
+
+
+        try {
+            unlink($mosaicPath);
+        } catch (Exception $e) {
+            fwrite(STDERR, 'Unable to delete images.');
+        }
 
     }
 

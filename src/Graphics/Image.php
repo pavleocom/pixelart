@@ -222,27 +222,78 @@ class Image implements ImageInterface
      * Builds photo mosaic
      * @param array $schema - array containing pixels and image objects: ['0,0' => ImageInterface, ...]
      */
-    public function createFromSchema(array $schema, string $outputDir)
+    public static function createFromSchema(array $schema, string $outputDir)
     {
+        $firstKey = array_key_first($schema);
+        $stockImageSize = imagesx($schema[$firstKey]->getImageResource());
 
-        $this->stockImageSize = imagesx($schema['0,0']->getImageResource());
-
-        $canvasWidth = $this->getWidth() * $this->stockImageSize;
-        $canvasHeight = $this->getHeight() * $this->stockImageSize;
+        $canvasWidth = self::getWidthFromSchema($schema) * $stockImageSize;
+        $canvasHeight = self::getHeightFromSchema($schema) * $stockImageSize;
 
         $canvas = imagecreatetruecolor($canvasWidth, $canvasHeight);
 
         foreach ($schema as $pixel => $image) {
             $parts = explode(',', $pixel);
-            $x = (intval($parts[0])) * $this->stockImageSize;
-            $y = (intval($parts[1])) * $this->stockImageSize;
+            $x = (intval($parts[0])) * $stockImageSize;
+            $y = (intval($parts[1])) * $stockImageSize;
 
-            imagecopy($canvas, $image->getImageResource(), $x, $y, 0, 0, $this->stockImageSize, $this->stockImageSize);
+            imagecopy($canvas, $image->getImageResource(), $x, $y, 0, 0, $stockImageSize, $stockImageSize);
         }
 
         $filepath = rtrim($outputDir, '\\/') . DIRECTORY_SEPARATOR . 'pixelart_' . time() . '.jpg';
         imagejpeg($canvas, $filepath);
 
         return $filepath;
+    }
+
+    /**
+     * Returns width determined from schema array.
+     * @param array $schema
+     * @return int $width
+     */
+    private static function getWidthFromSchema($schema)
+    {
+        $width = 0;
+
+        foreach ($schema as $pixel => $rgb)
+        {
+            $parts = explode(',', $pixel);
+
+            $pixelXPosition = (int) $parts[0];
+
+            if ( $width <= $pixelXPosition) {
+                $width = $pixelXPosition;
+            }
+
+        }
+
+        return $width + 1;
+    }
+
+    /**
+     * Return height determined from schema array.
+     * @param array $schema
+     * @return int $height
+     */
+    private static function getHeightFromSchema($schema)
+    {
+        $height = 0;
+
+        foreach ($schema as $pixel => $rgb)
+        {
+            $parts = explode(',', $pixel);
+
+            $pixelYPosition = (int) $parts[1];
+
+            if ( $height <= $pixelYPosition) {
+                $height = $pixelYPosition;
+            }
+
+            if ($pixelYPosition < $height) {
+                return $height + 1;
+            }
+        }
+
+        return $height + 1;
     }
 }
