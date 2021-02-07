@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PixelArt\Tests;
 
-use DirectoryIterator;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use PixelArt\Factory\ImageFactory;
 use PixelArt\Graphics\Stock;
@@ -45,6 +45,24 @@ class StockTest extends TestCase
         $this->assertEquals(162, $rgb[1]);
         $this->assertEquals(158, $rgb[2]);
 
+        $this->outputDirCleanUp();
+
+    }
+
+    private function outputDirCleanUp()
+    {
+        try {
+            unlink($this->outputDir . '/1.jpg');
+            unlink($this->outputDir . '/2.jpg');
+            unlink($this->outputDir . '/3.jpg');
+            unlink($this->outputDir . '/4.jpg');
+            unlink($this->outputDir . '/5.jpg');
+            unlink($this->outputDir . '/6.jpg');
+            unlink($this->outputDir . '/stock.csv');
+        } catch (Exception $e)
+        {
+            fwrite(STDERR, 'Could not delete files in the output dir.');
+        }
     }
 
 }

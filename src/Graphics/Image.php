@@ -85,9 +85,9 @@ class Image implements ImageInterface
             $blues += $rgb[2];
         }
 
-        $meanRed = (int) $reds / $pixels;
-        $meanGreen = (int) $greens / $pixels;
-        $meanBlue = (int) $blues / $pixels;
+        $meanRed = (int) ($reds / $pixels);
+        $meanGreen = (int) ($greens / $pixels);
+        $meanBlue = (int) ($blues / $pixels);
 
         return [$meanRed, $meanGreen, $meanBlue];
 
